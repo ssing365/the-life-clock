@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { differenceInYears, differenceInMonths, differenceInDays, addYears, addMonths, format } from 'date-fns';
 import Swal from 'sweetalert2';
 
@@ -11,6 +11,33 @@ export default function Home() {
   const [showResult, setShowResult] = useState(false);
   const [lifeClock, setLifeClock] = useState({ hour: 0, min: 0, sec: 0, ms: 0, us: 0 });
   const requestRef = useRef<number>(0);
+
+  const [lang, setLang] = useState('en');
+
+  // 컴포넌트 시작할 때 사용자 브라우저 언어 감지
+  useEffect(() => {
+    const userLang = navigator.language || navigator.languages[0];
+    if (userLang.startsWith('ko')) {
+      setLang('ko');
+    } else {
+      setLang('en');
+    }
+  }, []);
+
+  // 하단 명언
+  const quotes = [
+    { text: "Time is what we want most, but what we use worst.", author: "William Penn" },
+    { text: "Lost time is never found again.", author: "Benjamin Franklin" },
+    { text: "The key is in not spending time, but in investing it.", author: "Stephen R. Covey" },
+    { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+    { text: "Time is the most valuable thing a man can spend.", author: "Theophrastus" },
+    { text: "The future depends on what you do today.", author: "Mahatma Gandhi" },
+    { text: "Time flies over us, but leaves its shadow behind.", author: "Nathaniel Hawthorne" },
+  ];
+  
+  const randomQuote = useMemo(() => {
+    return quotes[Math.floor(Math.random() * quotes.length)];
+  }, [showResult]);
 
   const updateLifeClock = () => {
     const birth = new Date(birthDate);
@@ -64,26 +91,31 @@ export default function Home() {
   const handleClick = () => {
     // 생년월일 입력했는지 검사
     if (!birthDate) {
-      Swal.fire('Warning', 'Please select your birthday.<br/>생년월일을 입력해주세요.', 'warning');
+      Swal.fire('Warning',
+        lang === 'ko' ? '생년월일을 입력해주세요.'
+          : 'Please select your birthday.', 'warning');
       return;
     }
 
     // 수명 입력했는지 검사
     if (!lifeExpectancy) {
-      Swal.fire('Warning', 'Please select your life expectancy<br/>수명을 입력해주세요.(수명 범위 1~500)', 'error');
+      Swal.fire('Warning', lang === 'ko' ? '수명을 입력해주세요.(수명 범위 1~500)'
+        : 'Please select your life expectancy', 'error');
       return;
     }
 
     // 생년월일을 미래로 입력하지 않았는지 검사
     if (birth > today) {
-      Swal.fire('Error', 'Birthday cannot be in the future.<br/>오늘 이후 날짜를 생일로 입력할 수 없습니다.', 'error');
+      Swal.fire('Error', lang === 'ko' ? '오늘 이후 날짜를 생일로 입력할 수 없습니다.'
+        : 'Birthday cannot be in the future.', 'error');
       return;
     }
 
     // 수명을 1~500살 사이로 입력했는지 검사
     const expectancy = parseInt(lifeExpectancy);
     if (isNaN(expectancy) || expectancy < 1 || expectancy > 500) {
-      Swal.fire('Error', 'Life expectancy must be between 1 and 500.<br/>수명은 1~500살 사이로 입력해주세요.', 'error');
+      Swal.fire('Error', lang === 'ko' ? '수명은 1~500살 사이로 입력해주세요.'
+        : 'Life expectancy must be between 1 and 500.', 'error');
       return;
     }
 
@@ -91,7 +123,8 @@ export default function Home() {
     const deathDate = new Date(birthDate);
     deathDate.setFullYear(deathDate.getFullYear() + expectancy);
     if (today > deathDate) {
-      Swal.fire('Error', 'The life expectancy you entered has already been exceeded.<br/>입력한 수명이 이미 초과되었습니다.', 'error');
+      Swal.fire('Error', lang === 'ko' ? '입력한 수명이 이미 초과되었습니다.'
+        : 'The life expectancy you entered has already been exceeded.', 'error');
       return;
     }
 
@@ -102,24 +135,24 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-slate-900 text-white">
 
       <main className="flex-grow flex flex-col items-center justify-center p-6">
-        <h1 className="text-4xl font-bold mb-8 text-sky-200">Your Life Clock</h1>
+        <h1 className="font-dots text-4xl font-bold mb-8 text-sky-200">Your Life Clock</h1>
 
         {/** 입력 화면 */}
         {!showResult && (
           <div className="bg-white/10 backdrop-blur-xl p-6 rounded-xl shadow-md max-w-md w-full animate-fade-in">
 
             {/* 생일 입력 */}
-            <label className="block text-gray-50 text-lg font-semibold mb-2 ">
-              Your birthdate
+            <label className="font-dots block text-gray-50 text-lg font-semibold mb-2 ">
+              {lang === 'ko' ? '생년월일' : 'Your birthdate'}
             </label>
             <input type="date" value={birthDate}
               onChange={(e) => setBirthDate(e.target.value)}
-              max = "9999-12-31"
+              max="9999-12-31"
               className="w-full p-2 mb-4 rounded border text-gray-50" />
 
             {/* 수명 입력 */}
-            <label className="block text-lg text-gray-50 font-semibold mb-2">
-              Life expectancy
+            <label className="font-dots block text-lg text-gray-50 font-semibold mb-2">
+              {lang === 'ko' ? '예상 수명' : 'Life expectancy'}
             </label>
             <input type="number" value={lifeExpectancy}
               onChange={(e) => setLifeExpectancy(e.target.value)}
@@ -128,8 +161,8 @@ export default function Home() {
             {/* 계산 버튼 */}
             <div className="flex justify-center">
               <button onClick={handleClick}
-                className="bg-sky-200 text-slate-900 px-4 py-2 rounded hover:bg-sky-300 transition-all">
-                Show my life clock
+                className="font-dots font-medium bg-sky-200 text-slate-900 px-4 py-2 rounded hover:bg-sky-300 transition-all">
+                {lang === 'ko' ? '나의 인생 시계 보기' : 'Show my life clock'}
               </button>
             </div>
           </div>
@@ -138,7 +171,6 @@ export default function Home() {
         {/** 결과 화면 */}
         {showResult && (
           <div className="text-center animate-fade-in w-full max-w-4xl">
-
             {/* 디지털 시계 */}
             <div className="text-6xl sm:text-9xl font-bold text-indigo-100 mb-8 tracking-wide">
               {String(lifeClock.hour).padStart(2, '0')}:{/* 시 */}
@@ -153,23 +185,37 @@ export default function Home() {
             </div>
 
             {/* 설명 태그 */}
-            <p className="text-lg mb-2 mt-5 text-gray-200">You have lived
+            {lang === 'ko' ? <p className="font-dots text-lg mb-2 mt-5 text-gray-200">당신은 인생의
               <span className="font-semibold text-sky-300"> {(lifeRatio * 100).toFixed(1)}% </span>
-              of your life.
-            </p>
-            <p className="text-md text-gray-200">
-              You have
+              지점을 살고 있습니다.
+            </p> :
+              <p className="text-lg mb-2 mt-5 text-gray-200">You have lived
+                <span className="font-semibold text-sky-300"> {(lifeRatio * 100).toFixed(1)}% </span>
+                of your life.
+              </p>}
+
+            {lang === 'ko' ? <p className="font-dots text-md text-gray-200">
+              당신에게는 앞으로 총{" "}
+              <span className="font-semibold">{totalDays.toLocaleString()}</span>일 중
               <span className="font-semibold text-sky-300 ml-1 ">
-                {remainingDays.toLocaleString()} days ({yearsLeft}y {monthsLeft}m {daysLeft}d)
-                left </span>
-              { } out of { }
-              <span className="font-semibold">{totalDays.toLocaleString()} </span>
-              days in your life.
+                {remainingDays.toLocaleString()}일 ({yearsLeft}년 {monthsLeft}개월 {daysLeft}일)
+              </span>
+              이 남아있습니다.
             </p>
+              : <p className="text-md text-gray-200">
+                You have
+                <span className="font-semibold text-sky-300 ml-1 ">
+                  {remainingDays.toLocaleString()} days ({yearsLeft}y {monthsLeft}m {daysLeft}d)
+                  left </span>
+                { } out of { }
+                <span className="font-semibold">{totalDays.toLocaleString()} </span>
+                days in your life.
+              </p>}
+
 
             {/* 계산식 설명 */}
             <div className="relative group mt-1 cursor-pointer w-fit mx-auto">
-              <span className="text-xs text-gray-500 underline decoration-dotted">ⓘ View calculation method</span>
+              <span className="text-xs text-gray-500 underline">ⓘ View calculation method</span>
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-700 text-white text-xs rounded px-3 py-2 w-64 shadow-lg z-10">
                 Calculated as of {format(today, 'yyyy-MM-dd')}<br />
                 1 year = 365 days<br />
@@ -184,9 +230,20 @@ export default function Home() {
           </div>
         )}
       </main>
-      <footer className="text-center text-xs text-gray-500">
-        © 2025 ssing. All rights reserved.
-      </footer>
+
+      {/* 하단 명언 */}
+      {showResult && randomQuote && (
+        <p className="font-serif text-center text-sm text-gray-400 italic mt-4">
+          “{randomQuote.text}” – {randomQuote.author}
+        </p>
+      )}
+
+      {/* 메인 하단 저작권 */}
+      {!showResult && (
+        <footer className="text-center text-xs text-gray-500">
+          © 2025 ssing. All rights reserved.
+        </footer>
+      )}
     </div>
   );
 }

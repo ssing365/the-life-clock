@@ -135,7 +135,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-slate-900 text-white">
 
       <main className="flex-grow flex flex-col items-center justify-center p-6">
-        <h1 className="font-dots text-4xl font-bold mb-8 text-sky-200">Your Life Clock</h1>
+        <h1 className="font-dots text-4xl font-bold mb-5 text-sky-200">Your life clock</h1>
 
         {/** 입력 화면 */}
         {!showResult && (
@@ -172,7 +172,7 @@ export default function Home() {
         {showResult && (
           <div className="text-center animate-fade-in w-full max-w-4xl">
             {/* 디지털 시계 */}
-            <div className="text-6xl sm:text-9xl font-bold text-indigo-100 mb-8 tracking-wide">
+            <div className="text-6xl sm:text-9xl font-bold text-indigo-100 mt-8 mb-8 tracking-wide">
               {String(lifeClock.hour).padStart(2, '0')}:{/* 시 */}
               {String(lifeClock.min).padStart(2, '0')}:{/* 분 */}
               {String(lifeClock.sec).padStart(2, '0')}{/* 초 */}
@@ -185,9 +185,9 @@ export default function Home() {
             </div>
 
             {/* 설명 태그 */}
-            {lang === 'ko' ? <p className="font-dots text-lg mb-2 mt-5 text-gray-200">당신은 인생의
+            {lang === 'ko' ? <p className="font-dots text-lg mb-2 mt-5 text-gray-200">당신은 지금 인생의
               <span className="font-semibold text-sky-300"> {(lifeRatio * 100).toFixed(1)}% </span>
-              지점을 살고 있습니다.
+              를 살아왔습니다.
             </p> :
               <p className="text-lg mb-2 mt-5 text-gray-200">You have lived
                 <span className="font-semibold text-sky-300"> {(lifeRatio * 100).toFixed(1)}% </span>
@@ -195,10 +195,10 @@ export default function Home() {
               </p>}
 
             {lang === 'ko' ? <p className="font-dots text-md text-gray-200">
-              당신에게는 앞으로 총{" "}
-              <span className="font-semibold">{totalDays.toLocaleString()}</span>일 중
+              전체{" "}
+              <span className="font-semibold">{totalDays.toLocaleString()}</span>일 중, 앞으로
               <span className="font-semibold text-sky-300 ml-1 ">
-                {remainingDays.toLocaleString()}일 ({yearsLeft}년 {monthsLeft}개월 {daysLeft}일)
+              {remainingDays.toLocaleString()}일 - {yearsLeft}년 {monthsLeft}개월 {daysLeft}일
               </span>
               이 남아있습니다.
             </p>

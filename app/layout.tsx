@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Life-clock",
+  title: "life-clock",
   description: "24-Hour Life",
   icons: {
 		icon: "/timer.svg"

@@ -10,6 +10,7 @@
     "export": "next export"
   },
   "dependencies": {
+    "@next/third-parties": "^15.3.2",
     "date-fns": "^4.1.0",
     "next": "15.3.0",
     "react": "^19.0.0",

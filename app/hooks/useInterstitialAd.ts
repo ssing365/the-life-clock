@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useRef } from 'react';
 
-// 전면 광고 그룹 ID. 개발 중에는 반드시 테스트 ID를 써야 함(실제 ID로 테스트하면 정책 위반).
-// TODO: 출시 전에 콘솔에서 발급한 전면형 광고 그룹 ID로 교체
-const AD_GROUP_ID = 'ait-ad-test-interstitial-id';
+// 전면 광고 그룹 ID (콘솔 광고 지면 '다시 하기 전면광고').
+// 실제 ID로 테스트 번들에서 광고를 반복 노출·클릭하면 정책 위반이므로, 개발 중에는 테스트 ID('ait-ad-test-interstitial-id')로 바꿔서 확인할 것
+const AD_GROUP_ID = 'ait.v2.live.36100b32f9d8480d';
 
 type Sdk = typeof import('@apps-in-toss/web-framework');
 

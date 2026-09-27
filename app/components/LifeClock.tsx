@@ -10,7 +10,7 @@ interface LifeClockProps {
 
 export default function LifeClock({ lifeClock }: LifeClockProps) {
   return (
-    <div className="text-6xl sm:text-9xl font-bold text-indigo-100 mt-8 mb-8 tracking-wide">
+    <div className="text-6xl sm:text-9xl font-bold text-indigo-100 mt-8 mb-8 tracking-wide tabular-nums drop-shadow-[0_2px_12px_rgba(15,23,42,0.6)]">
       {String(lifeClock.hour).padStart(2, '0')}:{/* 시 */}
       {String(lifeClock.min).padStart(2, '0')}:{/* 분 */}
       {String(lifeClock.sec).padStart(2, '0')}{/* 초 */}

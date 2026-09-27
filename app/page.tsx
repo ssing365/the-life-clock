@@ -7,6 +7,7 @@ import LifeClock from './components/LifeClock';
 import LifeStats from './components/LifeStats';
 import Quote from './components/Quote';
 import Footer from './components/Footer';
+import WaveBackground from './components/WaveBackground';
 
 export default function Home() {
   const today = new Date();
@@ -92,9 +93,12 @@ export default function Home() {
   const lifeMinuteToDays = totalDays / (24 * 60);
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-900 text-white">
-      <main className="flex-grow flex flex-col items-center justify-center p-6">
-        <h1 className="font-dots text-4xl font-bold mb-5 text-sky-200">Your life clock</h1>
+    <div className="relative min-h-screen flex flex-col bg-slate-900 text-white">
+      {/* 파도 배경: 입력 화면은 낮게, 결과 화면은 살아온 비율만큼 차오름 */}
+      <WaveBackground level={showResult ? Math.max(lifeRatio, 0.08) : 0.12} />
+
+      <main className="relative z-10 flex-grow flex flex-col items-center justify-center p-6">
+        <h1 className="font-dots text-4xl font-bold mb-5 bg-gradient-to-r from-amber-200 via-pink-200 to-sky-200 bg-clip-text text-transparent">Your life clock</h1>
 
         {!showResult ? (
           <InputForm
@@ -122,7 +126,7 @@ export default function Home() {
             {/* 뒤로가기 버튼 */}
             <button
               onClick={() => setShowResult(false)}
-              className="mt-8 bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600"
+              className="mt-8 bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-2 rounded hover:bg-white/20 transition-all"
             >
               Go Back
             </button>
@@ -130,8 +134,10 @@ export default function Home() {
         )}
       </main>
 
-      {showResult && randomQuote && <Quote quote={randomQuote} />}
-      {!showResult && <Footer />}
+      <div className="relative z-10 pb-4">
+        {showResult && randomQuote && <Quote quote={randomQuote} />}
+        {!showResult && <Footer />}
+      </div>
     </div>
   );
 }

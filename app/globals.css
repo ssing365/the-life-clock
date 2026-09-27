@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0f172a; /* slate-900 */
+  --foreground: #ededed;
 }
 
 @theme inline {
@@ -13,10 +13,54 @@
   --font-dots: var(--font-noto-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* 애니메이션: animate-fade-in, animate-wave, animate-wave-reverse, animate-drift */
+@theme {
+  --animate-fade-in: fade-in 1s ease-out forwards;
+  --animate-wave: wave 12s linear infinite;
+  --animate-wave-reverse: wave-reverse 12s linear infinite;
+  --animate-drift: drift 26s ease-in-out infinite;
+  --animate-sky-shift: sky-shift 30s ease-in-out infinite;
+  --animate-glow: glow 6s ease-in-out infinite;
+  --animate-shimmer: shimmer 3s ease-in-out infinite;
+
+  /* 하늘 두 번째 그라데이션을 나타났다 사라지게 */
+  @keyframes sky-shift {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+  }
+
+  /* 해가 은은하게 숨쉬듯 (Tailwind v4 translate-*는 별도 속성이라 transform과 안 겹침) */
+  @keyframes glow {
+    0%, 100% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.06); opacity: 1; }
+  }
+
+  /* 윤슬 반짝임 */
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.15; transform: scaleX(0.7); }
+    50% { opacity: 0.9; transform: scaleX(1); }
+  }
+
+  @keyframes fade-in {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 파형 2주기 중 1주기(-50%)만큼 이동해야 끊김 없이 반복됨 */
+  @keyframes wave {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes wave-reverse {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+
+  @keyframes drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(6rem, 4rem) scale(1.1); }
+    66% { transform: translate(-3rem, 7rem) scale(0.95); }
   }
 }
 

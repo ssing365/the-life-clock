@@ -76,7 +76,7 @@ export default function InputForm({
         value={birthDate}
         onChange={(e) => setBirthDate(e.target.value)}
         max="9999-12-31"
-        className="w-full p-2 mb-4 rounded border text-gray-50"
+        className="w-full p-2 mb-4 rounded border border-white/20 bg-white/5 text-gray-50 focus:outline-none focus:border-sky-300"
       />
 
       {/* 수명 입력 */}
@@ -87,7 +87,7 @@ export default function InputForm({
         type="number"
         value={lifeExpectancy}
         onChange={(e) => setLifeExpectancy(e.target.value)}
-        className="w-full p-2 mb-4 rounded border text-gray-50"
+        className="w-full p-2 mb-4 rounded border border-white/20 bg-white/5 text-gray-50 focus:outline-none focus:border-sky-300"
         autoComplete="off"
         placeholder={lang === 'ko' ? '예상 수명을 입력하세요' : 'Enter your life expectancy'}
       />
@@ -96,7 +96,7 @@ export default function InputForm({
       <div className="flex justify-center">
         <button
           onClick={handleClick}
-          className="font-dots font-medium bg-sky-200 text-slate-900 px-4 py-2 rounded hover:bg-sky-300 transition-all"
+          className="font-dots font-medium bg-gradient-to-r from-amber-200 to-pink-300 text-slate-900 px-4 py-2 rounded shadow-lg shadow-pink-500/20 hover:brightness-110 transition-all"
         >
           {lang === 'ko' ? '나의 인생 시계 보기' : 'Show my life clock'}
         </button>

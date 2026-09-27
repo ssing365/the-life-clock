@@ -43,6 +43,7 @@ app/
     LifeStats.tsx       # 살아온 %, 남은 일수, 계산식 툴팁
     Quote.tsx           # 결과 화면 하단의 랜덤 명언
     Footer.tsx          # 입력 화면 하단 저작권 표시
+    WaveBackground.tsx  # 움직이는 파도 배경. 수위 = 살아온 비율
 public/timer.svg        # 파비콘
 ```
 
@@ -58,8 +59,8 @@ public/timer.svg        # 파비콘
 
 - UI 문자열 i18n은 라이브러리 없이 `lang === 'ko' ? '...' : '...'` 삼항으로 처리합니다. 새 문구를 추가할 때는 두 언어를 모두 넣으세요.
 - 코드 주석은 한국어로 씁니다.
-- 스타일은 Tailwind 유틸리티 클래스만 사용합니다. 기본 톤은 `bg-slate-900`, 강조색은 `sky-200`/`sky-300`, `indigo-*`입니다.
-- `fade-in` 애니메이션은 `tailwind.config.js`에 정의되어 있습니다.
+- 스타일은 Tailwind 유틸리티 클래스만 사용합니다. 배경은 `WaveBackground`의 노을 테마(`theme="sunset"`, 기본값)이고 `theme="night"`로 기존 밤바다 톤(slate-900 + sky/indigo)으로 되돌릴 수 있습니다. 제목과 주 버튼은 amber→pink 그라데이션, 결과 문구 강조색은 `amber-200`입니다.
+- 애니메이션(`fade-in`, `wave`, `wave-reverse`, `drift`)은 `app/globals.css`의 `@theme` 블록에 정의합니다. Tailwind v4라 `tailwind.config.js`는 읽히지 않으니 만들지 마세요.
 - 정적 export이므로 서버 전용 기능(API Routes, SSR, `next/image` 최적화 등)은 사용할 수 없습니다.
 - 커밋 메시지는 한국어로 씁니다. 재배포 커밋에는 `[N차 재배포]` 접두어를 붙입니다.
 

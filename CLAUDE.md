@@ -65,7 +65,7 @@ public/timer.svg        # 파비콘
 
 ## 배포
 
-- `npm run build`로 생성한 `out/`을 AWS S3 버킷 `life-clock-hosung`에 업로드하고 CloudFront(OAC)로 서빙합니다. S3 버킷 정책은 `bucket-policy.json`에 있습니다.
+- `npm run build`로 생성한 `out/`을 AWS S3 버킷 `life-clock-hosung`에 업로드하고 CloudFront(OAC)로 서빙합니다. S3 버킷 정책은 로컬 `bucket-policy.json`에 있습니다(gitignore 대상).
 - `out/`, `.next/`는 gitignore 대상입니다.
 
 ## 주의사항

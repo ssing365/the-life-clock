@@ -20,13 +20,13 @@ export default function LifeStats({
   return (
     <>
       {lang === 'ko' ? (
-        <p className="font-dots text-lg mb-2 mt-5 text-gray-50 drop-shadow-[0_1px_6px_rgba(15,23,42,0.7)]">
+        <p className="font-dots text-lg mb-2 mt-5 text-gray-50 drop-shadow-[0_1px_6px_rgba(15,23,42,0.7)] break-keep">
           당신은 지금 인생의
           <span className="font-semibold text-amber-200"> {(lifeRatio * 100).toFixed(1)}% </span>
           를 살아왔습니다.
         </p>
       ) : (
-        <p className="text-lg mb-2 mt-5 text-gray-50 drop-shadow-[0_1px_6px_rgba(15,23,42,0.7)]">
+        <p className="text-lg mb-2 mt-5 text-gray-50 drop-shadow-[0_1px_6px_rgba(15,23,42,0.7)] break-keep">
           You have lived
           <span className="font-semibold text-amber-200"> {(lifeRatio * 100).toFixed(1)}% </span>
           of your life.
@@ -34,7 +34,7 @@ export default function LifeStats({
       )}
 
       {lang === 'ko' ? (
-        <p className="font-dots text-md leading-relaxed text-gray-50 drop-shadow-[0_1px_6px_rgba(15,23,42,0.7)]">
+        <p className="font-dots text-md leading-relaxed text-gray-50 drop-shadow-[0_1px_6px_rgba(15,23,42,0.7)] break-keep">
           전체 <span className="font-semibold">{totalDays.toLocaleString()}</span>일 중,
           <br />
           앞으로
@@ -44,7 +44,7 @@ export default function LifeStats({
           이 남아있습니다.
         </p>
       ) : (
-        <p className="text-md leading-relaxed text-gray-50 drop-shadow-[0_1px_6px_rgba(15,23,42,0.7)]">
+        <p className="text-md leading-relaxed text-gray-50 drop-shadow-[0_1px_6px_rgba(15,23,42,0.7)] break-keep">
           Out of <span className="font-semibold">{totalDays.toLocaleString()}</span> days in your life,
           <br />
           you have

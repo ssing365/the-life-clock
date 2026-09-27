@@ -121,8 +121,9 @@ export default function WaveBackground({ level, theme = 'sunset' }: WaveBackgrou
           </div>
         ))}
 
-        {/* 물 본체 (Tailwind v4 색상은 oklch라 SVG hex와 달라 이음새가 생김 → hex로 직접 지정) */}
-        <div className="absolute inset-0" style={{ background: palette.body }} />
+        {/* 물 본체 (Tailwind v4 색상은 oklch라 SVG hex와 달라 이음새가 생김 → hex로 직접 지정)
+            위로 2px 늘려 맨 앞 파도와 겹치게 함: 딱 맞붙이면 서브픽셀 반올림으로 가는 틈이 보임 */}
+        <div className="absolute inset-x-0 bottom-0 -top-0.5" style={{ background: palette.body }} />
 
         {/* 윤슬 */}
         {palette.sun &&

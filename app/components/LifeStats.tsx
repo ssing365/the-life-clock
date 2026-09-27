@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-
 interface LifeStatsProps {
   lifeRatio: number;
   totalDays: number;
@@ -7,7 +5,6 @@ interface LifeStatsProps {
   yearsLeft: number;
   monthsLeft: number;
   daysLeft: number;
-  lifeMinuteToDays: number;
   lang: string;
 }
 
@@ -18,11 +15,8 @@ export default function LifeStats({
   yearsLeft,
   monthsLeft,
   daysLeft,
-  lifeMinuteToDays,
   lang
 }: LifeStatsProps) {
-  const today = new Date();
-
   return (
     <>
       {lang === 'ko' ? (
@@ -40,35 +34,26 @@ export default function LifeStats({
       )}
 
       {lang === 'ko' ? (
-        <p className="font-dots text-md text-gray-50 drop-shadow-[0_1px_6px_rgba(15,23,42,0.7)]">
-          전체{" "}
-          <span className="font-semibold">{totalDays.toLocaleString()}</span>일 중, 앞으로
-          <span className="font-semibold text-amber-200 ml-1 ">
-            {remainingDays.toLocaleString()}일 - {yearsLeft}년 {monthsLeft}개월 {daysLeft}일
+        <p className="font-dots text-md leading-relaxed text-gray-50 drop-shadow-[0_1px_6px_rgba(15,23,42,0.7)]">
+          전체 <span className="font-semibold">{totalDays.toLocaleString()}</span>일 중,
+          <br />
+          앞으로
+          <span className="font-semibold text-amber-200 ml-1">
+            {remainingDays.toLocaleString()}일 ({yearsLeft}년 {monthsLeft}개월 {daysLeft}일)
           </span>
           이 남아있습니다.
         </p>
       ) : (
-        <p className="text-md text-gray-50 drop-shadow-[0_1px_6px_rgba(15,23,42,0.7)]">
-          You have
-          <span className="font-semibold text-amber-200 ml-1 ">
+        <p className="text-md leading-relaxed text-gray-50 drop-shadow-[0_1px_6px_rgba(15,23,42,0.7)]">
+          Out of <span className="font-semibold">{totalDays.toLocaleString()}</span> days in your life,
+          <br />
+          you have
+          <span className="font-semibold text-amber-200 mx-1">
             {remainingDays.toLocaleString()} days ({yearsLeft}y {monthsLeft}m {daysLeft}d)
-            left </span>
-          out of
-          <span className="font-semibold">{totalDays.toLocaleString()} </span>
-          days in your life.
+          </span>
+          left.
         </p>
       )}
-
-      {/* 계산식 설명 */}
-      <div className="relative group mt-1 cursor-pointer w-fit mx-auto">
-        <span className="text-xs text-gray-500 underline">ⓘ View calculation method</span>
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-700 text-white text-xs rounded px-3 py-2 w-64 shadow-lg z-10">
-          Calculated as of {format(today, 'yyyy-MM-dd')}<br />
-          1 year = 365 days<br />
-          ⏱ 1 minute in your life clock ≈ {lifeMinuteToDays.toFixed(2)} days
-        </div>
-      </div>
     </>
   );
-} 
+}

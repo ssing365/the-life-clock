@@ -4,11 +4,12 @@ import { useEffect, useRef, useState } from 'react';
 
 type BgmToggleProps = {
   lang: string;
+  suspended?: boolean; // true인 동안 잠시 멈춤 (전면 광고 재생 중). 끝나면 켜져 있던 경우에만 다시 재생
 };
 
 // 배경음악 on/off 버튼 (화면 우측 상단 고정)
 // 접속 즉시 재생을 시도하고, 브라우저 자동재생 정책으로 막히면 첫 사용자 입력(클릭/터치/키) 때 재생합니다.
-export default function BgmToggle({ lang }: BgmToggleProps) {
+export default function BgmToggle({ lang, suspended = false }: BgmToggleProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   // 아이콘은 실제 재생 상태를 따름
@@ -46,6 +47,14 @@ export default function BgmToggle({ lang }: BgmToggleProps) {
       audio.removeEventListener('pause', onPause);
     };
   }, []);
+
+  // 광고 재생 중 일시정지 → 광고가 닫히면 재개
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (suspended) audio.pause();
+    else if (wantsPlayRef.current && audio.paused && audio.played.length > 0) audio.play().catch(() => {});
+  }, [suspended]);
 
   const toggle = () => {
     const audio = audioRef.current;

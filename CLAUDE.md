@@ -6,29 +6,31 @@ This file gives Claude Code guidance for working in this repository.
 
 **Life Clock**: 사용자의 인생을 24시간으로 환산해 보여주는 단일 페이지 웹앱입니다. 생년월일과 예상 수명(기본 100살)을 입력하면 현재 "인생 시각"(시:분:초.밀리초.마이크로초), 살아온 비율, 남은 일수를 실시간으로 표시합니다.
 
-- 브라우저 언어(`navigator.language`)가 `ko`로 시작하면 한국어로, 그 외에는 영어로 표시합니다.
+- 토스 앱(앱인토스)에서는 항상 한국어로 표시합니다. 일반 웹은 브라우저 언어(`navigator.language`)가 `ko`로 시작하면 한국어, 그 외에는 영어입니다. 정적 HTML이 한국어로 미리 그려지도록 `lang` 기본값은 `'ko'`입니다.
 - Google Analytics(`G-0RBX1TWD8N`)는 production 빌드에서만 로드됩니다.
 
 ## 명령어
 
 ```bash
 npm run dev     # 개발 서버 (Turbopack), http://localhost:3000
-npm run build   # 정적 export → out/ 디렉터리에 생성됨
+npm run build       # 정적 export(out/) + 앱인토스 번들(life-clock.ait) 생성
+npm run build:web   # 웹(S3)용 정적 export만 → out/
+npm run deploy      # life-clock.ait를 앱인토스 콘솔에 업로드 (ait deploy, API 키 필요)
 npm run lint    # next lint (ESLint 설정/의존성은 아직 없음)
 ```
 
 - 테스트 프레임워크는 없습니다.
-- `next.config.ts`의 `output: 'export'` 설정 때문에 `npm run build`만으로 `out/`이 생성됩니다(`next export` 명령은 Next 15에서 제거됨).
+- `next.config.ts`의 `output: 'export'` 설정 때문에 `next build`만으로 `out/`이 생성됩니다(`next export` 명령은 Next 15에서 제거됨).
 
 ## 기술 스택
 
 - Next.js 15 (App Router, `output: 'export'` 정적 사이트), React 19, TypeScript (strict)
 - Tailwind CSS v4 (`@tailwindcss/postcss`, `app/globals.css`의 `@theme inline`)
 - `date-fns`: 남은 년/월/일 계산
-- `sweetalert2`: 입력 검증 경고창
+- 입력 검증 오류는 `InputForm` 안에 인라인 문구로 표시합니다(토스 WebView에서 sweetalert2 경고창이 뜨지 않아 제거함).
 - `@next/third-parties/google`: GA
 - 폰트: `next/font/google`의 Geist, Geist Mono, Noto Sans. Noto Sans는 `--font-dots` 변수로 매핑되어 `font-dots` 클래스로 사용합니다.
-- `react-datepicker`는 설치되어 있지만 현재 사용하지 않습니다(네이티브 `<input type="date">` 사용).
+- `react-datepicker`는 설치되어 있지만 현재 사용하지 않습니다(년/월/일 숫자 입력 칸 사용).
 
 ## 구조
 
@@ -38,13 +40,15 @@ app/
   page.tsx              # 'use client'. 상태 전부 + 인생시계/통계 계산 로직
   globals.css           # Tailwind import, 테마 변수
   components/
-    InputForm.tsx       # 생년월일/수명 입력과 검증 (수명 1~500, 미래 생일 불가, 수명 초과 불가)
+    InputForm.tsx       # 생년월일(년/월/일 숫자 칸)·수명(60~120 슬라이더) 입력과 검증 (실제 날짜, 미래 생일 불가, 수명 초과 불가)
     LifeClock.tsx       # HH:MM:SS.mmm.uuu 표시
-    LifeStats.tsx       # 살아온 %, 남은 일수, 계산식 툴팁
+    LifeStats.tsx       # 살아온 %, 남은 일수
     Quote.tsx           # 결과 화면 하단의 랜덤 명언
     Footer.tsx          # 입력 화면 하단 저작권 표시
     WaveBackground.tsx  # 움직이는 파도 배경. 수위 = 살아온 비율
-    BgmToggle.tsx       # 우측 상단 배경음악 on/off 버튼 (접속 시 자동재생, 막히면 첫 입력 때 재생)
+    BgmToggle.tsx       # 우측 상단 배경음악 on/off 버튼 (접속 시 자동재생, 막히면 첫 입력 때 재생, 광고 중 일시정지)
+  hooks/
+    useInterstitialAd.ts # 토스 전면 광고 로드/표시 (다시 하기에만). 광고 그룹 ID는 현재 테스트 ID
 public/
   timer.svg             # 파비콘
   audio/main-bgm.mp3    # 배경음악
@@ -70,8 +74,9 @@ public/
 
 ## 배포
 
-- `npm run build`로 생성한 `out/`을 AWS S3 버킷 `life-clock-hosung`에 업로드하고 CloudFront(OAC)로 서빙합니다. S3 버킷 정책은 로컬 `bucket-policy.json`에 있습니다(gitignore 대상).
-- `out/`, `.next/`는 gitignore 대상입니다.
+- 웹: `npm run build:web`으로 생성한 `out/`을 AWS S3 버킷 `life-clock-hosung`에 업로드하고 CloudFront(OAC)로 서빙합니다. S3 버킷 정책은 로컬 `bucket-policy.json`에 있습니다(gitignore 대상).
+- 앱인토스: 미니앱 `life-clock`(워크스페이스 `Life-clock`). 설정은 `apps-in-toss.config.ts`(SDK 3.x, `webBundleDir: 'out'`). `npm run build`로 만든 `.ait`를 콘솔에 올려 QR로 테스트합니다.
+- `out/`, `.next/`, `*.ait`는 gitignore 대상입니다.
 
 ## 주의사항
 

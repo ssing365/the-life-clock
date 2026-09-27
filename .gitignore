@@ -44,3 +44,6 @@ next-env.d.ts
 .vscode/
 # AWS
 bucket-policy.json
+
+# 앱인토스 번들
+*.ait

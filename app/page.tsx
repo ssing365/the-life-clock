@@ -8,6 +8,7 @@ import LifeStats from './components/LifeStats';
 import Quote from './components/Quote';
 import Footer from './components/Footer';
 import WaveBackground from './components/WaveBackground';
+import BgmToggle from './components/BgmToggle';
 
 export default function Home() {
   const today = new Date();
@@ -96,6 +97,9 @@ export default function Home() {
     <div className="relative min-h-screen flex flex-col bg-slate-900 text-white">
       {/* 파도 배경: 입력 화면은 낮게, 결과 화면은 살아온 비율만큼 차오름 */}
       <WaveBackground level={showResult ? Math.max(lifeRatio, 0.08) : 0.12} />
+
+      {/* 배경음악 on/off */}
+      <BgmToggle lang={lang} />
 
       <main className="relative z-10 flex-grow flex flex-col items-center justify-center p-6">
         <h1 className="font-dots text-4xl font-bold mb-5 bg-gradient-to-r from-amber-200 via-pink-200 to-sky-200 bg-clip-text text-transparent">Your life clock</h1>

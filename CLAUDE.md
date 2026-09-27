@@ -44,7 +44,11 @@ app/
     Quote.tsx           # 결과 화면 하단의 랜덤 명언
     Footer.tsx          # 입력 화면 하단 저작권 표시
     WaveBackground.tsx  # 움직이는 파도 배경. 수위 = 살아온 비율
-public/timer.svg        # 파비콘
+    BgmToggle.tsx       # 우측 상단 배경음악 on/off 버튼 (접속 시 자동재생, 막히면 첫 입력 때 재생)
+public/
+  timer.svg             # 파비콘
+  audio/main-bgm.mp3    # 배경음악
+  icons/                # volume.svg(켜짐), volume-xmark.svg(꺼짐)
 ```
 
 ### 핵심 로직 (`app/page.tsx`)

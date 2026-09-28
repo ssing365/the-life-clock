@@ -62,6 +62,7 @@ public/
 - `lang`, `birthDate`(`yyyy-MM-dd` 문자열), `lifeExpectancy`(문자열)는 상태이고, `showResult`로 입력 화면과 결과 화면을 전환합니다.
 - 인생 시각 = `(현재 - 출생) / (사망예정 - 출생)` × 24시간. `requestAnimationFrame` 루프로 매 프레임 갱신합니다.
 - 사망 예정일 = 출생일 + `lifeExpectancy`년 (`setFullYear`).
+- 토스 앱 뒤로가기: 결과 화면일 때만 `graniteEvent`의 `backEvent`를 구독해 입력 화면으로 돌아갑니다. 입력 화면에서는 구독하지 않으므로 미니앱이 닫힙니다(앱인토스 검수 요구사항).
 - 명언 목록은 `page.tsx`에 하드코딩되어 있고, `showResult`가 바뀔 때마다 새로 뽑힙니다.
 
 ## 컨벤션

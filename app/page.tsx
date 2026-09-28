@@ -42,6 +42,28 @@ export default function Home() {
     }
   }, []);
 
+  // 토스 앱 뒤로가기: 결과 화면에서는 입력 화면으로 돌아감 (구독 중에는 미니앱 기본 종료 동작이 막힘)
+  // 입력 화면에서는 구독하지 않아서 기존대로 미니앱이 닫힘
+  useEffect(() => {
+    if (!showResult || !('ReactNativeWebView' in window)) return;
+    let unsubscribe: (() => void) | undefined;
+    let cancelled = false;
+    // 웹 빌드에서는 불러오지 않도록 동적 import
+    import('@apps-in-toss/web-framework')
+      .then(({ graniteEvent }) => {
+        if (cancelled) return;
+        unsubscribe = graniteEvent.addEventListener('backEvent', {
+          onEvent: () => setShowResult(false),
+          onError: (error) => console.error('뒤로가기 이벤트 오류:', error),
+        });
+      })
+      .catch((e) => console.error(e));
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
+  }, [showResult]);
+
   // 하단 명언
   const quotes = [
     { text: "Time is what we want most, but what we use worst.", author: "William Penn" },

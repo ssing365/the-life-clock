@@ -9,6 +9,7 @@ import Quote from './components/Quote';
 import Footer from './components/Footer';
 import WaveBackground from './components/WaveBackground';
 import BgmToggle from './components/BgmToggle';
+import BannerAd from './components/BannerAd';
 import useInterstitialAd from './hooks/useInterstitialAd';
 
 export default function Home() {
@@ -23,7 +24,7 @@ export default function Home() {
   const [toast, setToast] = useState<{ message: string; ok: boolean } | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [isAdShowing, setIsAdShowing] = useState(false);
-  const [isInToss, setIsInToss] = useState(false); // 광고는 토스 앱에서만 나오므로 안내 문구도 그때만 표시
+  const retryCount = useRef(0); // 다시 하기 누른 횟수 (2번에 1번 전면 광고)
   // 다시 하기 누를 때 띄우는 전면 광고 (토스 앱에서만)
   const showAd = useInterstitialAd({
     onAdOpen: () => setIsAdShowing(true),
@@ -33,7 +34,6 @@ export default function Home() {
   // 컴포넌트 시작할 때 언어 결정: 토스 앱에서는 항상 한국어, 일반 웹은 브라우저 언어 감지
   useEffect(() => {
     const inToss = 'ReactNativeWebView' in window;
-    setIsInToss(inToss);
     const userLang = navigator.language || navigator.languages[0];
     if (inToss || userLang.startsWith('ko')) {
       setLang('ko');
@@ -188,30 +188,26 @@ export default function Home() {
                 {lang === 'ko' ? '공유하기' : 'Share'}
               </button>
 
-              {/* 다시 하기 버튼 + 광고 안내 */}
-              <div className="flex flex-col items-center gap-1">
-                <button
-                  onClick={() => {
-                    // 화면은 바로 입력 화면으로 바꾸고 그 위에 광고를 띄움 (광고가 닫혀도 흐름이 막히지 않게)
-                    setShowResult(false);
-                    showAd();
-                  }}
-                  className="font-dots min-w-32 bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-2 rounded hover:bg-white/20 transition-all"
-                >
-                  {lang === 'ko' ? '다시 하기' : 'Try again'}
-                </button>
-                {isInToss && (
-                  <span className="font-dots text-xs text-white/50">
-                    {lang === 'ko' ? '(광고가 나와요)' : '(Includes an ad)'}
-                  </span>
-                )}
-              </div>
+              {/* 다시 하기 버튼 */}
+              <button
+                onClick={() => {
+                  // 화면은 바로 입력 화면으로 바꾸고, 두 번째 누를 때마다 그 위에 광고를 띄움 (광고가 닫혀도 흐름이 막히지 않게)
+                  setShowResult(false);
+                  retryCount.current += 1;
+                  if (retryCount.current % 2 === 0) showAd();
+                }}
+                className="font-dots min-w-32 bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-2 rounded hover:bg-white/20 transition-all"
+              >
+                {lang === 'ko' ? '다시 하기' : 'Try again'}
+              </button>
             </div>
           </div>
         )}
       </main>
 
       <div className="relative z-10 pb-4">
+        {/* 다시 하기와 명언 사이 배너 광고 (토스 앱에서만) */}
+        {showResult && <BannerAd />}
         {showResult && randomQuote && <Quote quote={randomQuote} />}
         {!showResult && <Footer />}
       </div>

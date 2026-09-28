@@ -47,8 +47,9 @@ app/
     Footer.tsx          # 입력 화면 하단 저작권 표시
     WaveBackground.tsx  # 움직이는 파도 배경. 수위 = 살아온 비율
     BgmToggle.tsx       # 우측 상단 배경음악 on/off 버튼 (접속 시 자동재생, 막히면 첫 입력 때 재생, 광고 중 일시정지)
+    BannerAd.tsx        # 결과 화면 다시 하기와 명언 사이 토스 배너 광고 (토스 앱에서만, 광고 없으면 숨김). 실제 광고 그룹 ID 사용 중(개발 테스트 땐 테스트 ID로 교체)
   hooks/
-    useInterstitialAd.ts # 토스 전면 광고 로드/표시 (다시 하기에만). 실제 광고 그룹 ID 사용 중(개발 테스트 땐 테스트 ID로 교체)
+    useInterstitialAd.ts # 토스 전면 광고 로드/표시 (다시 하기 2번에 1번). 실제 광고 그룹 ID 사용 중(개발 테스트 땐 테스트 ID로 교체)
 public/
   timer.svg             # 파비콘
   audio/main-bgm.mp3    # 배경음악

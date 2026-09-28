@@ -49,12 +49,37 @@ export default function BgmToggle({ lang, suspended = false }: BgmToggleProps) {
   }, []);
 
   // 광고 재생 중 일시정지 → 광고가 닫히면 재개
+  const suspendedRef = useRef(suspended);
+  suspendedRef.current = suspended;
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
     if (suspended) audio.pause();
-    else if (wantsPlayRef.current && audio.paused && audio.played.length > 0) audio.play().catch(() => {});
+    else if (!document.hidden && wantsPlayRef.current && audio.paused && audio.played.length > 0) audio.play().catch(() => {});
   }, [suspended]);
+
+  // 앱이 백그라운드로 가면(홈 화면, 다른 앱 전환) 일시정지 → 돌아오면 재개
+  // iOS 토스 앱은 백그라운드 오디오가 허용돼 있어서 직접 멈추지 않으면 계속 재생됨
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const pause = () => audio.pause();
+    const resume = () => {
+      if (document.hidden || suspendedRef.current) return;
+      if (wantsPlayRef.current && audio.paused && audio.played.length > 0) audio.play().catch(() => {});
+    };
+    const onVisibilityChange = () => (document.hidden ? pause() : resume());
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    window.addEventListener('pagehide', pause);
+    window.addEventListener('pageshow', resume);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      window.removeEventListener('pagehide', pause);
+      window.removeEventListener('pageshow', resume);
+    };
+  }, []);
 
   const toggle = () => {
     const audio = audioRef.current;
